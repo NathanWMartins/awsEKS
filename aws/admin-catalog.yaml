@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: admin-catalog
+  namespace: codeflix
+  labels:
+    app: admin-catalog
+  spec:
+    selector:
+      matchLabels:
+        app: admin-catalog
+    replicas: 2
+    template:
+      metadata:
+        labels:
+          app: admin-catalog
+          role: app
+      spec: 
+        containers:
+          - name: admin-catalog
+            image: admin-catalog:latest
+            env:
+              - name: ASPNETCORE_ENVIRONMENT
+                value: Development
+              - name: ConnectionsStrings_CatalogoDb
+                value: Server=mysql-0.mysql-h.codeflix.svc.cluster.local;Port=3306;Database=catalog;Uid=root;Pwd=rot;
+              - name: RabbitMQ_Hostname
+                value: rabbitmq.codeflix.svc.cluster.local
+              - name: Keycloak__auth-server-url
+                value: http://keycloak-service:8080
+              - name: Storage__BucketBame
+                value: fc3-medias-catalog-admin
+            volumeMounts:
+              - name: gpc-credentials-volume
+                mountPath: /app/gcp_credentials.json
+                subPath: gcp_credentials.json
+        volumes:
+          - name: gpc-credentials-volume
+            secret:
+              secretName: gpc-credentials-secret
