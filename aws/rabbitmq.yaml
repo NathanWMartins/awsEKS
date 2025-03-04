@@ -1,0 +1,26 @@
+apiVersion: rabbitmq.io/v1beta1
+kind: Rabbitmqluster
+metadata:
+  name: rabbitmq
+  namespace: codeflix
+spec:
+  replicas: 1
+  persistence:
+    storageClass: gp3-storageClass
+    storage: 1Gi
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 500m
+      memoey: 1Gi
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: role
+            operator: In
+            values:
+            - messaging
