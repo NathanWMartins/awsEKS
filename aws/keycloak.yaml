@@ -29,4 +29,4 @@ spec:
     podTemplate:
       matadata:
         labels:
-          role: app
+          schedule_on: fargate
